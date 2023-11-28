@@ -95,4 +95,5 @@ async function run() {
 }
 run().catch(console.dir);
 
+// port will change dynamically
 app.listen(process.env.PORT || port)
