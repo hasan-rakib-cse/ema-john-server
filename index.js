@@ -65,28 +65,28 @@ async function run() {
         res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
     })
 
-  //   // multiple product load from database when passed keys from client-side
-  //   app.post('/productsByKeys', async (req, res) => {
-  //     await client.connect();
+    // multiple product load from database when passed keys from client-side
+    app.post('/productsByKeys', async (req, res) => {
+      await client.connect();
 
-  //     const productKeys = req.body;
-  //     const cursor = productsCollection.find({key: { $in: productKeys }})
-  //     const services = await cursor.toArray();
-  //     res.send(services);
+      const productKeys = req.body;
+      const cursor = productsCollection.find({key: { $in: productKeys }})
+      const services = await cursor.toArray();
+      res.send(services);
 
-  //   })
+    })
 
-  //   // Shipment er order information gulo database e save korbo.
-  //   app.post('/addOrder', async (req, res) => {
-  //     await client.connect();
-  //     const order = req.body;
+    // Shipment er order information gulo database e save korbo.
+    app.post('/addOrder', async (req, res) => {
+      await client.connect();
+      const order = req.body;
 
-  //     // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
-  //     await ordersCollection.insertOne(order) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
-  //     .then((result) => {
-  //       res.send(result);
-  //     })
-  // })
+      // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
+      await ordersCollection.insertOne(order) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
+      .then((result) => {
+        res.send(result);
+      })
+  })
     
   } finally {
     // Ensures that the client will close when you finish/error
