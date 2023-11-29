@@ -55,15 +55,15 @@ async function run() {
         res.send(services);
     })
 
-  //   // single product load from database when click on product title
-  //   app.get('/product/:key', async (req, res) => {
-  //       await client.connect();
+    // single product load from database when click on product title
+    app.get('/product/:key', async (req, res) => {
+        await client.connect();
 
-  //       const clientKey = req.params.key;
-  //       const cursor = productsCollection.find({key: req.params.key})
-  //       const services = await cursor.toArray();
-  //       res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
-  //   })
+        const clientKey = req.params.key;
+        const cursor = productsCollection.find({key: req.params.key})
+        const services = await cursor.toArray();
+        res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
+    })
 
   //   // multiple product load from database when passed keys from client-side
   //   app.post('/productsByKeys', async (req, res) => {
