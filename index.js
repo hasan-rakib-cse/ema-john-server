@@ -34,17 +34,17 @@ async function run() {
     const productsCollection = await db.collection(`${process.env.PROD_COLL_NAME}`);
     const ordersCollection = await db.collection(`${process.env.ORDER_COLL_NAME}`);
 
-    // CREATE OPERATION
-    app.post('/addProduct', async (req, res) => {
-        await client.connect();
-        const products = req.body;
+    // // CREATE OPERATION
+    // app.post('/addProduct', async (req, res) => {
+    //     await client.connect();
+    //     const products = req.body;
 
-        // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
-        await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
-        .then((result) => {
-          res.send(result.insertedCount);
-        })
-    })
+    //     // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
+    //     await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
+    //     .then((result) => {
+    //       res.send(result.insertedCount);
+    //     })
+    // })
 
     // READ OPERATION
     app.get('/products', async (req, res) => {
@@ -55,38 +55,38 @@ async function run() {
         res.send(services);
     })
 
-    // single product load from database when click on product title
-    app.get('/product/:key', async (req, res) => {
-        await client.connect();
+  //   // single product load from database when click on product title
+  //   app.get('/product/:key', async (req, res) => {
+  //       await client.connect();
 
-        const clientKey = req.params.key;
-        const cursor = productsCollection.find({key: req.params.key})
-        const services = await cursor.toArray();
-        res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
-    })
+  //       const clientKey = req.params.key;
+  //       const cursor = productsCollection.find({key: req.params.key})
+  //       const services = await cursor.toArray();
+  //       res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
+  //   })
 
-    // multiple product load from database when passed keys from client-side
-    app.post('/productsByKeys', async (req, res) => {
-      await client.connect();
+  //   // multiple product load from database when passed keys from client-side
+  //   app.post('/productsByKeys', async (req, res) => {
+  //     await client.connect();
 
-      const productKeys = req.body;
-      const cursor = productsCollection.find({key: { $in: productKeys }})
-      const services = await cursor.toArray();
-      res.send(services);
+  //     const productKeys = req.body;
+  //     const cursor = productsCollection.find({key: { $in: productKeys }})
+  //     const services = await cursor.toArray();
+  //     res.send(services);
 
-    })
+  //   })
 
-    // Shipment er order information gulo database e save korbo.
-    app.post('/addOrder', async (req, res) => {
-      await client.connect();
-      const order = req.body;
+  //   // Shipment er order information gulo database e save korbo.
+  //   app.post('/addOrder', async (req, res) => {
+  //     await client.connect();
+  //     const order = req.body;
 
-      // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
-      await ordersCollection.insertOne(order) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
-      .then((result) => {
-        res.send(result);
-      })
-  })
+  //     // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
+  //     await ordersCollection.insertOne(order) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
+  //     .then((result) => {
+  //       res.send(result);
+  //     })
+  // })
     
   } finally {
     // Ensures that the client will close when you finish/error
