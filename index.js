@@ -34,17 +34,22 @@ async function run() {
     const productsCollection = await db.collection(`${process.env.PROD_COLL_NAME}`);
     const ordersCollection = await db.collection(`${process.env.ORDER_COLL_NAME}`);
 
-    // // CREATE OPERATION
-    // app.post('/addProduct', async (req, res) => {
-    //     await client.connect();
-    //     const products = req.body;
+    // View root directory
+    app.get('/', async (req, res) => {
+      res.send("Hello Ema-John Server. It's Working");
+    })
 
-    //     // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
-    //     await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
-    //     .then((result) => {
-    //       res.send(result.insertedCount);
-    //     })
-    // })
+    // CREATE OPERATION
+    app.post('/addProduct', async (req, res) => {
+        await client.connect();
+        const products = req.body;
+
+        // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
+        await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
+        .then((result) => {
+          res.send(result.insertedCount);
+        })
+    })
 
     // READ OPERATION
     app.get('/products', async (req, res) => {
