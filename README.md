@@ -1,6 +1,7 @@
-only copy existing project from ema-john-fullstack to Hosting.
+#### This repository is hosted in Render App (render.com)
 
-#### This repository will he hosted in Render App (render.com).
+### Server Side Live Link: 
+### https://ema-john-server-yz24.onrender.com/
 
 
-### Render Ema-John-Server Link: https://ema-john-server-yz24.onrender.com/
+## N.B: Though it is a free hosting site, it will take some time to load the server. Please Keep Patients.
