@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// This is your test secret API key.
+const stripe = require("stripe")('sk_test_51OOe0mH4LAmM9WWUSBf0MYZseCQA2Hm3PvgsCHFdABWIuKAvdEUaQW92dlOjrxAkgXBZTiX63f8V0T4BzKsQZdyR00QRH5buNS');
+
 const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config()
 
@@ -13,6 +16,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(express.static("public"));
+app.use(express.json());
+
 const port = 4000;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -23,6 +29,13 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   }
 });
+
+const calculateOrderAmount = (items) => {
+  // Replace this constant with a calculation of the order's amount
+  // Calculate the order total on the server to prevent
+  // people from directly manipulating the amount on the client
+  return 1400;
+};
 
 async function run() {
   try {
@@ -41,11 +54,11 @@ async function run() {
 
     // CREATE OPERATION
     app.post('/addProduct', async (req, res) => {
-        await client.connect();
-        const products = req.body;
+      await client.connect();
+      const products = req.body;
 
-        // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
-        await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
+      // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
+      await productsCollection.insertOne(products) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
         .then((result) => {
           res.send(result.insertedCount);
         })
@@ -53,21 +66,21 @@ async function run() {
 
     // READ OPERATION
     app.get('/products', async (req, res) => {
-        await client.connect();
+      await client.connect();
 
-        const cursor = productsCollection.find({}) // sob data read kortase.
-        const services = await cursor.toArray();
-        res.send(services);
+      const cursor = productsCollection.find({}) // sob data read kortase.
+      const services = await cursor.toArray();
+      res.send(services);
     })
 
     // single product load from database when click on product title
     app.get('/product/:key', async (req, res) => {
-        await client.connect();
+      await client.connect();
 
-        const clientKey = req.params.key;
-        const cursor = productsCollection.find({key: req.params.key})
-        const services = await cursor.toArray();
-        res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
+      const clientKey = req.params.key;
+      const cursor = productsCollection.find({ key: req.params.key })
+      const services = await cursor.toArray();
+      res.send(services[0]); // jehetu amra 1 ta single item k return kortase tai array[0] dea lagbe.
     })
 
     // multiple product load from database when passed keys from client-side
@@ -75,7 +88,7 @@ async function run() {
       await client.connect();
 
       const productKeys = req.body;
-      const cursor = productsCollection.find({key: { $in: productKeys }})
+      const cursor = productsCollection.find({ key: { $in: productKeys } })
       const services = await cursor.toArray();
       res.send(services);
 
@@ -88,11 +101,30 @@ async function run() {
 
       // await productsCollection.insertMany(products) // front end theke fakeData pathaitase & akhan theke data ek sathe mongoDB te insert kore detase.
       await ordersCollection.insertOne(order) // front end theke 1 ta kore data pathaitase & backend teheke mongoDB te save hobe.
-      .then((result) => {
-        res.send(result);
-      })
-  })
+        .then((result) => {
+          res.send(result);
+        })
+    })
+
+    // Payment Gateway
+    app.post("/create-payment-intent", async (req, res) => {
+      const { items } = req.body;
     
+      // Create a PaymentIntent with the order amount and currency
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: calculateOrderAmount(items),
+        currency: "usd",
+        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+    
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
