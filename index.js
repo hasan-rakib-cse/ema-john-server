@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// This is your test secret API key.
+// This is your test secret API key of Stripe.
 const stripe = require("stripe")('sk_test_51OOe0mH4LAmM9WWUSBf0MYZseCQA2Hm3PvgsCHFdABWIuKAvdEUaQW92dlOjrxAkgXBZTiX63f8V0T4BzKsQZdyR00QRH5buNS');
 
 const { MongoClient, ServerApiVersion } = require('mongodb');
